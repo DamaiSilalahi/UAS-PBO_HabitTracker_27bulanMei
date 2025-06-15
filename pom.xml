@@ -5,15 +5,17 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.example</groupId>
-  <artifactId>UAS-PBO_HabitTracker_27bulanMei</artifactId>
+  <artifactId>Project_lab</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>UAS-PBO_HabitTracker_27bulanMei</name>
+  <name>Project_lab</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-<junit.version>5.10.2</junit.version>  </properties>
+    <junit.version>5.10.2</junit.version>
+  </properties>
 
   <dependencies>
+    <!-- Dependency untuk JavaFX -->
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
@@ -25,7 +27,15 @@
       <version>17.0.6</version>
     </dependency>
 
-<dependency>
+    <!-- Dependency untuk SQLite (dipindahkan ke sini) -->
+    <dependency>
+      <groupId>org.xerial</groupId>
+      <artifactId>sqlite-jdbc</artifactId>
+      <version>3.45.1.0</version>
+    </dependency>
+
+    <!-- Dependency untuk Testing -->
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <version>${junit.version}</version>
@@ -36,7 +46,8 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <version>${junit.version}</version>
       <scope>test</scope>
-    </dependency>  </dependencies>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
@@ -45,8 +56,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.13.0</version>
         <configuration>
-          <source>23</source>
-          <target>23</target>
+          <source>17</source> <!-- Sesuaikan dengan versi JavaFX Anda -->
+          <target>17</target> <!-- Sesuaikan dengan versi JavaFX Anda -->
         </configuration>
       </plugin>
       <plugin>
@@ -58,7 +69,7 @@
             <!-- Default configuration for running with: mvn clean javafx:run -->
             <id>default-cli</id>
             <configuration>
-              <mainClass>com.example.uaspbo_habittracker_27bulanmei/com.example.uaspbo_habittracker_27bulanmei.HelloApplication</mainClass>
+              <mainClass>com.example.project_lab/com.example.project_lab.HabitTrackerApp</mainClass> <!-- Pastikan ini nama kelas utama Anda -->
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>
