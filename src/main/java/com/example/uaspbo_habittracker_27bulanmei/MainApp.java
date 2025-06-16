@@ -54,7 +54,7 @@ public class MainApp extends Application {
         }
     }
 
-
+nsk
     public void showHabitTrackerScene(User user) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("HabitTracker.fxml"));
