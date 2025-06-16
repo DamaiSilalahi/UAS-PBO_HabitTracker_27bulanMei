@@ -9,20 +9,23 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefWidth="300.0" spacing="15.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.uaspbo_habittracker_27bulanmei.controller.SignUpController">
+<VBox alignment="CENTER" prefWidth="300.0" spacing="15.0" style="-fx-background-color: #e6f0f2;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.uaspbo_habittracker_27bulanmei.controller.SignUpController">
     <children>
-        <Label text="Buat Akun Baru">
+        <Label text="Buat Akun Baru" textAlignment="CENTER" textFill="#1e3d59">
             <font>
                 <Font name="System Bold" size="24.0" />
             </font>
         </Label>
-        <TextField fx:id="usernameField" promptText="Username" />
-        <PasswordField fx:id="passwordField" promptText="Password" />
+        <TextField fx:id="usernameField" promptText="Username" style="-fx-background-radius: 15;" />
+        <PasswordField fx:id="passwordField" promptText="Password" style="-fx-background-radius: 15;" />
         <Label fx:id="errorLabel" textFill="RED" />
-        <Button mnemonicParsing="false" onAction="#handleSignUp" prefWidth="250.0" text="Sign Up" />
+        <Button mnemonicParsing="false" onAction="#handleSignUp" prefWidth="250.0" style="-fx-background-radius: 15; -fx-background-color: #1e3d59;" text="Sign Up" textFill="WHITE" />
         <Hyperlink onAction="#handleGoToLogin" text="Sudah punya akun? Login" />
     </children>
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
 </VBox>
