@@ -39,7 +39,6 @@ public class MainApp extends Application {
             e.printStackTrace();
         }
     }
-    abc
 
     public void showSignUpScene() {
         try {
