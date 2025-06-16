@@ -7,11 +7,11 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.uaspbo_habittracker_27bulanmei.controller.HabitTrackerController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.uaspbo_habittracker_27bulanmei.controller.HabitTrackerController">
     <top>
         <VBox alignment="CENTER_LEFT" spacing="5.0" BorderPane.alignment="CENTER">
             <children>
@@ -22,8 +22,8 @@
                 </Label>
                 <HBox spacing="10.0">
                     <children>
-                        <TextField fx:id="habitInput" HBox.hgrow="ALWAYS" promptText="Masukkan kebiasaan baru..." />
-                        <Button mnemonicParsing="false" onAction="#handleAddHabit" text="Tambah" />
+                        <TextField fx:id="habitInput" promptText="Masukkan kebiasaan baru..." HBox.hgrow="ALWAYS" />
+                        <Button onAction="#handleAddHabit" text="Tambah" />
                     </children>
                 </HBox>
             </children>
@@ -43,12 +43,13 @@
         </ScrollPane>
     </center>
     <bottom>
-        <HBox alignment="CENTER_RIGHT" BorderPane.alignment="CENTER">
+        <HBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER">
             <children>
-                <Button mnemonicParsing="false" onAction="#handleLogout" text="Logout" textFill="RED" />
+                <Button onAction="#handleViewHistory" text="Lihat Riwayat" />
+                <Region HBox.hgrow="ALWAYS" /> <Button onAction="#handleLogout" text="Logout" textFill="RED" />
             </children>
             <BorderPane.margin>
-                <Insets bottom="10.0" right="10.0" />
+                <Insets bottom="10.0" left="10.0" right="10.0" />
             </BorderPane.margin>
         </HBox>
     </bottom>

@@ -2,9 +2,15 @@ package com.example.uaspbo_habittracker_27bulanmei.db;
 
 import com.example.uaspbo_habittracker_27bulanmei.model.Habit;
 import com.example.uaspbo_habittracker_27bulanmei.model.User;
+
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.YearMonth; // <-- IMPORT BARU
 import java.util.ArrayList;
+import java.util.HashMap;    // <-- IMPORT BARU
+import java.util.HashSet;    // <-- IMPORT BARU
+import java.util.Map;        // <-- IMPORT BARU
+import java.util.Set;        // <-- IMPORT BARU
 
 public class DatabaseManager {
     private static final String URL = "jdbc:sqlite:habit_tracker.db";
@@ -35,19 +41,84 @@ public class DatabaseManager {
                 + "FOREIGN KEY (user_id) REFERENCES users(id)"
                 + ");";
 
+        // KODE BARU DITAMBAHKAN DI SINI
+        String historyTableSql = "CREATE TABLE IF NOT EXISTS habit_history ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "habit_id INTEGER NOT NULL,"
+                + "completion_date TEXT NOT NULL,"
+                + "FOREIGN KEY (habit_id) REFERENCES habits(id) ON DELETE CASCADE,"
+                + "UNIQUE(habit_id, completion_date)"
+                + ");";
+
         try (Connection conn = connect(); Statement stmt = conn.createStatement()) {
             stmt.execute(userTableSql);
             stmt.execute(habitTableSql);
+            stmt.execute(historyTableSql); // <-- EKSEKUSI QUERY BARU
         } catch (SQLException e) {
             System.out.println("Error saat inisialisasi database: " + e.getMessage());
         }
     }
 
+    // Method untuk mencatat penyelesaian habit
+    public void logHabitCompletion(int habitId, LocalDate date) {
+        String sql = "INSERT OR IGNORE INTO habit_history(habit_id, completion_date) VALUES(?, ?)";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, habitId);
+            pstmt.setString(2, date.toString());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // Method untuk mengambil semua tanggal di mana ada habit yang selesai
+    public Set<LocalDate> getCompletedDatesForMonth(int userId, YearMonth month) {
+        Set<LocalDate> completedDates = new HashSet<>();
+        String sql = "SELECT DISTINCT hh.completion_date FROM habit_history hh " +
+                "JOIN habits h ON hh.habit_id = h.id " +
+                "WHERE h.user_id = ? AND strftime('%Y-%m', hh.completion_date) = ?";
+
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            pstmt.setString(2, month.toString());
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                completedDates.add(LocalDate.parse(rs.getString("completion_date")));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return completedDates;
+    }
+
+    // Method untuk mendapatkan ringkasan (contoh: per bulan)
+    public Map<String, Integer> getMonthlySummary(int userId, YearMonth month) {
+        Map<String, Integer> summary = new HashMap<>();
+        String sql = "SELECT h.name, COUNT(hh.id) as count FROM habit_history hh " +
+                "JOIN habits h ON hh.habit_id = h.id " +
+                "WHERE h.user_id = ? AND strftime('%Y-%m', hh.completion_date) = ? " +
+                "GROUP BY h.name ORDER BY count DESC";
+
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            pstmt.setString(2, month.toString());
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                summary.put(rs.getString("name"), rs.getInt("count"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return summary;
+    }
+
+    // ... Sisa dari method-method Anda (signUpUser, signInUser, dll.) tidak perlu diubah ...
+    // ... dan diletakkan di bawah sini ...
     public boolean signUpUser(String username, String password) {
         String sql = "INSERT INTO users(username, password) VALUES(?, ?)";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
-            pstmt.setString(2, password); // Di dunia nyata, HASH password ini!
+            pstmt.setString(2, password);
             pstmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -103,7 +174,6 @@ public class DatabaseManager {
             pstmt.setString(4, habit.getDate().toString());
             pstmt.executeUpdate();
 
-            // Ambil ID yang di-generate oleh DB dan set ke objek habit
             ResultSet generatedKeys = pstmt.getGeneratedKeys();
             if (generatedKeys.next()) {
                 habit.setId(generatedKeys.getInt(1));
@@ -124,6 +194,6 @@ public class DatabaseManager {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+                }
         }
-    }
 }

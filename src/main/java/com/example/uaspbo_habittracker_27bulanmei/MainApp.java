@@ -1,6 +1,7 @@
 package com.example.uaspbo_habittracker_27bulanmei;
 
 import com.example.uaspbo_habittracker_27bulanmei.controller.HabitTrackerController;
+import com.example.uaspbo_habittracker_27bulanmei.controller.HistoryController; // <-- IMPORT BARU
 import com.example.uaspbo_habittracker_27bulanmei.controller.LoginController;
 import com.example.uaspbo_habittracker_27bulanmei.controller.SignUpController;
 import com.example.uaspbo_habittracker_27bulanmei.db.DatabaseManager;
@@ -20,12 +21,8 @@ public class MainApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-
-        // Inisialisasi Database saat aplikasi pertama kali jalan
         DatabaseManager dbManager = new DatabaseManager();
         dbManager.initializeDatabase();
-
-        // Tampilkan halaman login pertama kali
         showLoginScene();
     }
 
@@ -33,10 +30,8 @@ public class MainApp extends Application {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
             Parent root = loader.load();
-
             LoginController controller = loader.getController();
             controller.setMainApp(this);
-
             primaryStage.setTitle("Habit Tracker - Login");
             primaryStage.setScene(new Scene(root, 300, 300));
             primaryStage.show();
@@ -49,10 +44,8 @@ public class MainApp extends Application {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("SignUp.fxml"));
             Parent root = loader.load();
-
             SignUpController controller = loader.getController();
             controller.setMainApp(this);
-
             primaryStage.setTitle("Habit Tracker - Sign Up");
             primaryStage.setScene(new Scene(root, 300, 300));
             primaryStage.show();
@@ -66,12 +59,24 @@ public class MainApp extends Application {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("HabitTracker.fxml"));
             Parent root = loader.load();
-
             HabitTrackerController controller = loader.getController();
-            controller.initData(user, this); // Mengirim data user dan mainApp ke controller
-
+            controller.initData(user, this);
             primaryStage.setTitle("Habit Tracker");
             primaryStage.setScene(new Scene(root, 350, 400));
+            primaryStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showHistoryScene(User user) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("HistoryView.fxml"));
+            Parent root = loader.load();
+            HistoryController controller = loader.getController();
+            controller.initData(user, this);
+            primaryStage.setTitle("Riwayat Kebiasaan");
+            primaryStage.setScene(new Scene(root, 800, 600));
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
