@@ -25,7 +25,6 @@ public class HabitTrackerController {
     private final DatabaseManager dbManager = new DatabaseManager();
     private ArrayList<Habit> habitList = new ArrayList<>();
 
-    // Method ini dipanggil oleh MainApp untuk memberikan data awal
     public void initData(User user, MainApp mainApp) {
         this.currentUser = user;
         this.mainApp = mainApp;
@@ -35,7 +34,7 @@ public class HabitTrackerController {
 
     private void loadHabits() {
         habitList = dbManager.getHabitsForUser(currentUser.getId());
-        resetAllHabitsIfNewDay(); // Cek jika ada yg perlu direset saat load
+        resetAllHabitsIfNewDay();
         updateHabitDisplay();
     }
 
@@ -44,8 +43,6 @@ public class HabitTrackerController {
         String habitName = habitInput.getText().trim();
         if (!habitName.isEmpty()) {
             Habit newHabit = new Habit(currentUser.getId(), habitName, LocalDate.now());
-
-            // Simpan ke DB dan perbarui objek dengan ID dari DB
             Habit savedHabit = dbManager.addHabit(newHabit);
             if (savedHabit != null) {
                 habitList.add(savedHabit);
@@ -67,10 +64,12 @@ public class HabitTrackerController {
             cb.setOnAction(e -> {
                 if (cb.isSelected()) {
                     habit.markCompleted();
+                    // Mencatat penyelesaian habit ke riwayat
+                    dbManager.logHabitCompletion(habit.getId(), LocalDate.now());
                 } else {
                     habit.resetStatus();
                 }
-                // Setiap ada perubahan, update ke database
+                // Memperbarui status habit di database utama
                 dbManager.updateHabit(habit);
             });
             habitDisplayBox.getChildren().add(cb);
@@ -83,7 +82,7 @@ public class HabitTrackerController {
             if (!h.getDate().equals(today)) {
                 h.resetStatus();
                 h.setDate(today);
-                dbManager.updateHabit(h); // Simpan status reset ke DB
+                dbManager.updateHabit(h);
             }
         }
     }
@@ -91,5 +90,10 @@ public class HabitTrackerController {
     @FXML
     private void handleLogout() {
         mainApp.showLoginScene();
+    }
+
+    @FXML
+    private void handleViewHistory() {
+        mainApp.showHistoryScene(currentUser);
     }
 }
