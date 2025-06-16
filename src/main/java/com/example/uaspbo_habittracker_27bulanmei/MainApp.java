@@ -39,7 +39,7 @@ public class MainApp extends Application {
             e.printStackTrace();
         }
     }
-
+ghuj
     public void showSignUpScene() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("SignUp.fxml"));
