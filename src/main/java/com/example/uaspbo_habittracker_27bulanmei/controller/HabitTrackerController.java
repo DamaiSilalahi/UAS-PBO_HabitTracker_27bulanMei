@@ -19,6 +19,8 @@ public class HabitTrackerController {
     @FXML private Label welcomeLabel;
     @FXML private TextField habitInput;
     @FXML private VBox habitDisplayBox;
+    @FXML private VBox achievementBox;
+    @FXML private Label achievementMessage;
 
     private User currentUser;
     private MainApp mainApp;
@@ -36,6 +38,7 @@ public class HabitTrackerController {
         habitList = dbManager.getHabitsForUser(currentUser.getId());
         resetAllHabitsIfNewDay();
         updateHabitDisplay();
+        checkTodayAchievement();
     }
 
     @FXML
@@ -71,6 +74,7 @@ public class HabitTrackerController {
                 }
                 // Memperbarui status habit di database utama
                 dbManager.updateHabit(habit);
+                checkTodayAchievement();
             });
             habitDisplayBox.getChildren().add(cb);
         }
@@ -86,6 +90,32 @@ public class HabitTrackerController {
             }
         }
     }
+
+    private void checkTodayAchievement() {
+        long completedCount = habitList.stream().filter(Habit::isCompleted).count();
+        long total = habitList.size();
+
+        if (total == 0) {
+            achievementMessage.setText("🔔 Belum ada habit hari ini.");
+            return;
+        }
+
+        double completionRatio = (double) completedCount / total;
+
+        if (completedCount == total) {
+            achievementMessage.setText("🔥 Keren! Semua habit selesai hari ini! Kamu luar biasa!");
+        } else if (completionRatio >= 0.75) {
+            achievementMessage.setText("👏 Hampir selesai! Sedikit lagi menuju sempurna!");
+        } else if (completionRatio >= 0.5) {
+            achievementMessage.setText("👍 Sudah lebih dari setengah selesai, tetap semangat!");
+        } else if (completedCount >= 1) {
+            achievementMessage.setText("💡 Kamu sudah mulai, teruskan kebiasaan baik ini!");
+        } else {
+            achievementMessage.setText("💪 Ayo mulai checklist kebiasaanmu hari ini!");
+        }
+
+    }
+
 
     @FXML
     private void handleLogout() {

@@ -33,14 +33,20 @@
         </VBox>
     </top>
     <center>
-        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" BorderPane.alignment="CENTER">
-            <content>
-                <VBox fx:id="habitDisplayBox" spacing="5.0" />
-            </content>
-            <BorderPane.margin>
-                <Insets bottom="10.0" left="10.0" right="10.0" />
-            </BorderPane.margin>
-        </ScrollPane>
+        <HBox spacing="10.0" alignment="TOP_CENTER" BorderPane.alignment="CENTER">
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefWidth="200.0">
+                <content>
+                    <VBox fx:id="habitDisplayBox" spacing="5.0" />
+                </content>
+            </ScrollPane>
+
+            <VBox fx:id="achievementBox" spacing="5.0"
+                  style="-fx-background-color: #f4f4f4; -fx-padding: 10; -fx-border-color: #ccc; -fx-border-radius: 5;"
+                  prefWidth="120.0">
+                <Label text="🎯 Pencapaian Hari Ini" style="-fx-font-weight: bold;" />
+                <Label fx:id="achievementMessage" wrapText="true" />
+            </VBox>
+        </HBox>
     </center>
     <bottom>
         <HBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER">

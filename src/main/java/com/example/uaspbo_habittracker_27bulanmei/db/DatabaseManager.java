@@ -11,6 +11,7 @@ import java.util.HashMap;    // <-- IMPORT BARU
 import java.util.HashSet;    // <-- IMPORT BARU
 import java.util.Map;        // <-- IMPORT BARU
 import java.util.Set;        // <-- IMPORT BARU
+import java.util.List;
 
 public class DatabaseManager {
     private static final String URL = "jdbc:sqlite:habit_tracker.db";
@@ -184,6 +185,25 @@ public class DatabaseManager {
             return null;
         }
     }
+
+    public Map<Integer, List<LocalDate>> getHabitCompletionLog(int userId) {
+        Map<Integer, List<LocalDate>> logMap = new HashMap<>();
+        try (Connection conn = connect();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT habit_id, completion_date FROM habit_history WHERE user_id = ?")) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int habitId = rs.getInt("habit_id");
+                LocalDate date = rs.getDate("completion_date").toLocalDate();
+                logMap.computeIfAbsent(habitId, k -> new ArrayList<>()).add(date);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return logMap;
+    }
+
 
     public void updateHabit(Habit habit) {
         String sql = "UPDATE habits SET status = ?, last_updated = ? WHERE id = ?";
