@@ -19,12 +19,12 @@
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
-      <version>23.0.1</version>
+      <version>17.0.6</version>
     </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-fxml</artifactId>
-      <version>23.0.1</version>
+      <version>17.0.6</version>
     </dependency>
 
     <!-- Dependency untuk SQLite (dipindahkan ke sini) -->
@@ -54,10 +54,10 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.11.0</version>
+        <version>3.13.0</version>
         <configuration>
-          <source>23</source> <!-- Sesuaikan dengan versi JavaFX Anda -->
-          <target>23</target> <!-- Sesuaikan dengan versi JavaFX Anda -->
+          <source>17</source> <!-- Sesuaikan dengan versi JavaFX Anda -->
+          <target>17</target> <!-- Sesuaikan dengan versi JavaFX Anda -->
         </configuration>
       </plugin>
       <plugin>
@@ -69,7 +69,7 @@
             <!-- Default configuration for running with: mvn clean javafx:run -->
             <id>default-cli</id>
             <configuration>
-              <mainClass>com.example.uaspbo_habittracker_27bulanmei.MainApp</mainClass> <!-- Pastikan ini nama kelas utama Anda -->
+              <mainClass>com.example.project_lab/com.example.project_lab.HabitTrackerApp</mainClass> <!-- Pastikan ini nama kelas utama Anda -->
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>
@@ -83,3 +83,6 @@
     </plugins>
   </build>
 </project>
+
+
+
