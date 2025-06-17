@@ -1,5 +1,6 @@
 package com.example.uaspbo_habittracker_27bulanmei;
 
+
 import com.example.uaspbo_habittracker_27bulanmei.controller.HabitTrackerController;
 import com.example.uaspbo_habittracker_27bulanmei.controller.HistoryController; // <-- IMPORT BARU
 import com.example.uaspbo_habittracker_27bulanmei.controller.LoginController;
@@ -11,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import com.example.uaspbo_habittracker_27bulanmei.controller.StatisticsController;
 
 import java.io.IOException;
 
@@ -85,5 +87,20 @@ public class MainApp extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public void showStatisticsScene(User user) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("StatisticsView.fxml"));
+            Parent root = loader.load();
+            StatisticsController controller = loader.getController();
+            controller.initData(user, this);
+            primaryStage.setTitle("Statistik & Progres");
+            primaryStage.setScene(new Scene(root, 600, 400));
+            primaryStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            //ko
+        }
     }
 }
