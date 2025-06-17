@@ -66,14 +66,16 @@ public class HabitTrackerController {
             cb.setSelected(habit.isCompleted());
 
             cb.setOnAction(e -> {
+                LocalDate today = LocalDate.now(); // Gunakan satu variabel agar konsisten
                 if (cb.isSelected()) {
                     habit.markCompleted();
-                    // Mencatat penyelesaian habit ke riwayat
-                    dbManager.logHabitCompletion(habit.getId(), LocalDate.now());
+                    dbManager.logHabitCompletion(habit.getId(), today);
                 } else {
                     habit.resetStatus();
+                    // --- DEBUG PRINT ---
+                    System.out.println("DEBUG [Controller]: Mencoba menghapus riwayat untuk habit ID: " + habit.getId() + " pada tanggal: " + today);
+                    dbManager.removeHabitCompletionLog(habit.getId(), today);
                 }
-                // Memperbarui status habit di database utama
                 dbManager.updateHabit(habit);
                 updateAchievementMessage();
             });
@@ -140,5 +142,10 @@ public class HabitTrackerController {
     @FXML
     private void handleViewHistory() {
         mainApp.showHistoryScene(currentUser);
+    }
+
+    @FXML
+    private void handleViewStatistics() {
+        mainApp.showStatisticsScene(currentUser);
     }
 }

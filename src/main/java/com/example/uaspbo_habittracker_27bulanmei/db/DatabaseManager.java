@@ -239,5 +239,62 @@ public class DatabaseManager {
         return 0;
     }
 
+    // Method untuk mengambil semua riwayat penyelesaian per habit ID
+    public Map<Integer, List<LocalDate>> getHabitCompletionHistory(int userId) {
+        Map<Integer, List<LocalDate>> historyMap = new HashMap<>();
+        String sql = "SELECT h.id as habit_id, hh.completion_date " +
+                "FROM habit_history hh JOIN habits h ON hh.habit_id = h.id " +
+                "WHERE h.user_id = ?";
+
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                int habitId = rs.getInt("habit_id");
+                LocalDate date = LocalDate.parse(rs.getString("completion_date"));
+                historyMap.computeIfAbsent(habitId, k -> new ArrayList<>()).add(date);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return historyMap;
+    }
+
+    // Method untuk mengambil semua tanggal unik di mana ada habit yang selesai
+    public Set<LocalDate> getAllUniqueCompletionDates(int userId) {
+        Set<LocalDate> dates = new HashSet<>();
+        String sql = "SELECT DISTINCT hh.completion_date FROM habit_history hh " +
+                "JOIN habits h ON hh.habit_id = h.id WHERE h.user_id = ?";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                dates.add(LocalDate.parse(rs.getString("completion_date")));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return dates;
+    }
+
+    public void removeHabitCompletionLog(int habitId, LocalDate date) {
+        String sql = "DELETE FROM habit_history WHERE habit_id = ? AND completion_date = ?";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, habitId);
+            pstmt.setString(2, date.toString());
+
+            // --- DEBUG PRINT ---
+            System.out.println("DEBUG [DBManager]: Menjalankan SQL -> " + sql + " dengan habit_id=" + habitId + ", completion_date=" + date.toString());
+
+            int rowsAffected = pstmt.executeUpdate();
+
+            // --- DEBUG PRINT ---
+            System.out.println("DEBUG [DBManager]: Jumlah baris yang terhapus dari habit_history: " + rowsAffected);
+
+        } catch (SQLException e) {
+            System.out.println("Error saat menghapus riwayat habit: " + e.getMessage());
+        }
+    }
+
 
 }

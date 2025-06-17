@@ -50,6 +50,7 @@
         <HBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER">
             <children>
                 <Button onAction="#handleViewHistory" style="-fx-background-radius: 15;" text="Lihat Riwayat" textFill="#1e3d59" />
+                <Button onAction="#handleViewStatistics" style="-fx-background-radius: 15;" text="Lihat Statistik" />
                 <Region HBox.hgrow="ALWAYS" /> <Button onAction="#handleLogout" style="-fx-background-radius: 15;" text="Logout" textFill="RED" />
             </children>
             <BorderPane.margin>
