@@ -216,4 +216,28 @@ public class DatabaseManager {
             System.out.println(e.getMessage());
                 }
         }
+
+    public int getTotalHabitDays(int userId) {
+        String query = """
+        SELECT COUNT(DISTINCT completion_date)
+        FROM habit_history
+        WHERE habit_id IN (
+            SELECT id FROM habits WHERE user_id = ?
+        )
+    """;
+
+        try (Connection conn = connect();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+
 }

@@ -31,6 +31,10 @@ public class HistoryController {
     private final DatabaseManager dbManager = new DatabaseManager();
     private YearMonth currentMonth;
 
+    public void initialize() {
+        currentMonth = YearMonth.now();
+    }
+
     public void initData(User user, MainApp mainApp) {
         this.currentUser = user;
         this.mainApp = mainApp;
@@ -42,6 +46,7 @@ public class HistoryController {
         monthYearLabel.setText(currentMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("id")) + " " + currentMonth.getYear());
         populateCalendar();
         populateSummary();
+        updateLongTermAchievements();
     }
 
     private void populateCalendar() {
@@ -80,6 +85,27 @@ public class HistoryController {
         }
     }
 
+    @FXML private VBox badgeBox;
+
+    private void updateLongTermAchievements() {
+        badgeBox.getChildren().clear();
+        int totalDays = dbManager.getTotalHabitDays(currentUser.getId()); // hitung dari DB berapa hari habit selesai
+
+        if (totalDays >= 365) {
+            badgeBox.getChildren().add(new Label("🏆 365 Hari Konsisten!"));
+        }
+        if (totalDays >= 90) {
+            badgeBox.getChildren().add(new Label("🧠 90 Hari Konsisten!"));
+        }
+        if (totalDays >= 30) {
+            badgeBox.getChildren().add(new Label("🏅 30 Hari Konsisten!"));
+        }
+        if (totalDays < 30) {
+            badgeBox.getChildren().add(new Label("💡 Tetap semangat membangun konsistensi!"));
+        }
+    }
+
+
     private void populateSummary() {
         summaryListView.getItems().clear();
         Map<String, Integer> summary = dbManager.getMonthlySummary(currentUser.getId(), currentMonth);
@@ -106,3 +132,5 @@ public class HistoryController {
         mainApp.showHabitTrackerScene(currentUser);
     }
 }
+
+

@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class HabitTrackerController {
 
@@ -38,7 +39,7 @@ public class HabitTrackerController {
         habitList = dbManager.getHabitsForUser(currentUser.getId());
         resetAllHabitsIfNewDay();
         updateHabitDisplay();
-        checkTodayAchievement();
+        updateAchievementMessage();
     }
 
     @FXML
@@ -74,7 +75,7 @@ public class HabitTrackerController {
                 }
                 // Memperbarui status habit di database utama
                 dbManager.updateHabit(habit);
-                checkTodayAchievement();
+                updateAchievementMessage();
             });
             habitDisplayBox.getChildren().add(cb);
         }
@@ -91,12 +92,21 @@ public class HabitTrackerController {
         }
     }
 
-    private void checkTodayAchievement() {
-        long completedCount = habitList.stream().filter(Habit::isCompleted).count();
-        long total = habitList.size();
+    private void updateAchievementMessage() {
+        List<Habit> habits = dbManager.getHabitsForUser(currentUser.getId());
+        LocalDate today = LocalDate.now();
+        int total = habits.size();
+        int completedCount = 0;
+
+        for (Habit h : habits) {
+            h.resetStatusIfNewDay(today);
+            if (h.isCompleted() && h.getDate().equals(today)) {
+                completedCount++;
+            }
+        }
 
         if (total == 0) {
-            achievementMessage.setText("🔔 Belum ada habit hari ini.");
+            achievementMessage.setText("Tambahkan kebiasaan terlebih dahulu.");
             return;
         }
 
@@ -113,7 +123,12 @@ public class HabitTrackerController {
         } else {
             achievementMessage.setText("💪 Ayo mulai checklist kebiasaanmu hari ini!");
         }
+    }
 
+    private Label createStyledLabel(String text) {
+        Label label = new Label(text);
+        label.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+        return label;
     }
 
 
