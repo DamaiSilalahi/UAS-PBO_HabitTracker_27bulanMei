@@ -106,9 +106,9 @@ public class StatisticsController {
     }
 
     private void displayResults(double percentage, int streak, double average) {
-        percentageLabel.setText(String.format("Persentase Keberhasilan: %.2f%%", percentage));
-        streakLabel.setText("Streak Terpanjang: " + streak + " hari");
-        weeklyAverageLabel.setText(String.format("Rata-rata Penyelesaian/Minggu: %.2f", average));
+        percentageLabel.setText(String.format("%.1f%%", percentage));
+        streakLabel.setText(streak + " hari");
+        weeklyAverageLabel.setText(String.format("%.1f kali", average));
     }
 
     private Habit findHabitByName(String name) {
