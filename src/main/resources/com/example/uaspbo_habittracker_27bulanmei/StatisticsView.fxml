@@ -2,52 +2,70 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?> <?import javafx.scene.text.Font?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #e6f0f2;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.uaspbo_habittracker_27bulanmei.controller.StatisticsController">
+<BorderPane prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: #e6f0f2;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.uaspbo_habittracker_27bulanmei.controller.StatisticsController">
     <top>
-        <Label text="Statistik &amp; Progres" BorderPane.alignment="CENTER">
-            <font>
-                <Font name="System Bold" size="24.0" />
-            </font>
+        <VBox alignment="CENTER" spacing="15.0" style="-fx-background-color: #1e3d59;">
             <padding>
-                <Insets top="20.0" />
+                <Insets bottom="20.0" left="20.0" right="20.0" top="10.0" />
             </padding>
-        </Label>
-    </top>
-    <center>
-        <VBox alignment="CENTER_LEFT" spacing="20.0">
             <children>
-                <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Label text="Tampilkan Statistik untuk:">
+                <Label text="Progres Anda" textFill="white">
+                    <font>
+                        <Font name="System Bold" size="28.0" />
+                    </font>
+                </Label>
+                <HBox alignment="CENTER" spacing="10">
+                    <Label text="Tampilkan Statistik untuk:" textFill="white" >
                         <font><Font size="14.0" /></font>
                     </Label>
-                    <ComboBox fx:id="habitSelectionComboBox" prefWidth="250.0" />
+                    <ComboBox fx:id="habitSelectionComboBox" prefWidth="300.0"
+                              style="-fx-background-color: white; -fx-background-radius: 15;" />
                 </HBox>
-                <Label fx:id="percentageLabel" text="Persentase Keberhasilan: -%">
-                    <font><Font size="18.0" /></font>
-                </Label>
-                <Label fx:id="streakLabel" text="Streak Terpanjang: - hari">
-                    <font><Font size="18.0" /></font>
-                </Label>
-                <Label fx:id="weeklyAverageLabel" text="Rata-rata Penyelesaian/Minggu: -">
-                    <font><Font size="18.0" /></font>
-                </Label>
             </children>
-            <padding>
-                <Insets left="50.0" right="50.0" />
-            </padding>
         </VBox>
+    </top>
+    <center>
+        <GridPane alignment="CENTER" hgap="20" vgap="20">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="15.0" />
+            </padding>
+
+            <VBox alignment="CENTER" minHeight="100.0" spacing="5.0" style="-fx-background-color: #ffffff; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 1);" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <padding>
+                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                </padding>
+                <Label text="Persentase Keberhasilan 📈" style="-fx-font-weight: bold; -fx-text-fill: #1e3d59; -fx-font-size: 14px;"/>
+                <Label fx:id="percentageLabel" text="- %" style="-fx-font-weight: bold; -fx-font-size: 28px;"/>
+            </VBox>
+
+            <VBox alignment="CENTER" minHeight="100.0" spacing="5.0" style="-fx-background-color: #ffffff; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 1);" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <padding>
+                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                </padding>
+                <Label text="Streak Terpanjang 🔥" style="-fx-font-weight: bold; -fx-text-fill: #1e3d59; -fx-font-size: 14px;"/>
+                <Label fx:id="streakLabel" text="- hari" style="-fx-font-weight: bold; -fx-font-size: 28px;"/>
+            </VBox>
+
+            <VBox alignment="CENTER" minHeight="100.0" spacing="5.0" style="-fx-background-color: #ffffff; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 1);" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                <padding>
+                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                </padding>
+                <Label text="Rata-rata Penyelesaian/Minggu 📅" style="-fx-font-weight: bold; -fx-text-fill: #1e3d59; -fx-font-size: 14px;"/>
+                <Label fx:id="weeklyAverageLabel" text="- kali" style="-fx-font-weight: bold; -fx-font-size: 28px;"/>
+            </VBox>
+        </GridPane>
     </center>
     <bottom>
-        <Button onAction="#handleBack" text="Kembali" BorderPane.alignment="CENTER_LEFT">
-            <BorderPane.margin>
-                <Insets bottom="20.0" left="20.0" />
-            </BorderPane.margin>
-        </Button>
+        <HBox alignment="CENTER">
+            <padding>
+                <Insets bottom="20.0" />
+            </padding>
+            <Button onAction="#handleBack" text="Kembali" style="-fx-background-color: #1e3d59; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20px; -fx-padding: 5px 20px;" />
+        </HBox>
     </bottom>
 </BorderPane>
