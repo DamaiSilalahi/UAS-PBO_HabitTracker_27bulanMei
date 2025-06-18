@@ -5,12 +5,12 @@ import com.example.uaspbo_habittracker_27bulanmei.model.User;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.YearMonth; // <-- IMPORT BARU
+import java.time.YearMonth;
 import java.util.ArrayList;
-import java.util.HashMap;    // <-- IMPORT BARU
-import java.util.HashSet;    // <-- IMPORT BARU
-import java.util.Map;        // <-- IMPORT BARU
-import java.util.Set;        // <-- IMPORT BARU
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.List;
 
 public class DatabaseManager {
@@ -42,7 +42,6 @@ public class DatabaseManager {
                 + "FOREIGN KEY (user_id) REFERENCES users(id)"
                 + ");";
 
-        // KODE BARU DITAMBAHKAN DI SINI
         String historyTableSql = "CREATE TABLE IF NOT EXISTS habit_history ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "habit_id INTEGER NOT NULL,"
@@ -54,13 +53,35 @@ public class DatabaseManager {
         try (Connection conn = connect(); Statement stmt = conn.createStatement()) {
             stmt.execute(userTableSql);
             stmt.execute(habitTableSql);
-            stmt.execute(historyTableSql); // <-- EKSEKUSI QUERY BARU
+            stmt.execute(historyTableSql);
         } catch (SQLException e) {
             System.out.println("Error saat inisialisasi database: " + e.getMessage());
         }
     }
 
-    // Method untuk mencatat penyelesaian habit
+    // Method baru untuk mengambil kebiasaan yang selesai pada tanggal tertentu
+    public List<String> getHabitsCompletedOnDate(int userId, LocalDate date) {
+        List<String> habits = new ArrayList<>();
+        String sql = "SELECT h.name FROM habit_history hh " +
+                "JOIN habits h ON hh.habit_id = h.id " +
+                "WHERE h.user_id = ? AND hh.completion_date = ?";
+
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            pstmt.setString(2, date.toString());
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                habits.add(rs.getString("name"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching habits for date: " + e.getMessage());
+        }
+        return habits;
+    }
+
+
+    // ... (Metode-metode DatabaseManager lainnya tetap sama seperti sebelumnya) ...
+
     public void logHabitCompletion(int habitId, LocalDate date) {
         String sql = "INSERT OR IGNORE INTO habit_history(habit_id, completion_date) VALUES(?, ?)";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -72,7 +93,6 @@ public class DatabaseManager {
         }
     }
 
-    // Method untuk mengambil semua tanggal di mana ada habit yang selesai
     public Set<LocalDate> getCompletedDatesForMonth(int userId, YearMonth month) {
         Set<LocalDate> completedDates = new HashSet<>();
         String sql = "SELECT DISTINCT hh.completion_date FROM habit_history hh " +
@@ -92,7 +112,6 @@ public class DatabaseManager {
         return completedDates;
     }
 
-    // Method untuk mendapatkan ringkasan (contoh: per bulan)
     public Map<String, Integer> getMonthlySummary(int userId, YearMonth month) {
         Map<String, Integer> summary = new HashMap<>();
         String sql = "SELECT h.name, COUNT(hh.id) as count FROM habit_history hh " +
@@ -113,8 +132,6 @@ public class DatabaseManager {
         return summary;
     }
 
-    // ... Sisa dari method-method Anda (signUpUser, signInUser, dll.) tidak perlu diubah ...
-    // ... dan diletakkan di bawah sini ...
     public boolean signUpUser(String username, String password) {
         String sql = "INSERT INTO users(username, password) VALUES(?, ?)";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -204,7 +221,6 @@ public class DatabaseManager {
         return logMap;
     }
 
-
     public void updateHabit(Habit habit) {
         String sql = "UPDATE habits SET status = ?, last_updated = ? WHERE id = ?";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -214,8 +230,8 @@ public class DatabaseManager {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-                }
         }
+    }
 
     public int getTotalHabitDays(int userId) {
         String query = """
@@ -239,7 +255,6 @@ public class DatabaseManager {
         return 0;
     }
 
-    // Method untuk mengambil semua riwayat penyelesaian per habit ID
     public Map<Integer, List<LocalDate>> getHabitCompletionHistory(int userId) {
         Map<Integer, List<LocalDate>> historyMap = new HashMap<>();
         String sql = "SELECT h.id as habit_id, hh.completion_date " +
@@ -260,7 +275,6 @@ public class DatabaseManager {
         return historyMap;
     }
 
-    // Method untuk mengambil semua tanggal unik di mana ada habit yang selesai
     public Set<LocalDate> getAllUniqueCompletionDates(int userId) {
         Set<LocalDate> dates = new HashSet<>();
         String sql = "SELECT DISTINCT hh.completion_date FROM habit_history hh " +
@@ -282,19 +296,9 @@ public class DatabaseManager {
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, habitId);
             pstmt.setString(2, date.toString());
-
-            // --- DEBUG PRINT ---
-            System.out.println("DEBUG [DBManager]: Menjalankan SQL -> " + sql + " dengan habit_id=" + habitId + ", completion_date=" + date.toString());
-
             int rowsAffected = pstmt.executeUpdate();
-
-            // --- DEBUG PRINT ---
-            System.out.println("DEBUG [DBManager]: Jumlah baris yang terhapus dari habit_history: " + rowsAffected);
-
         } catch (SQLException e) {
             System.out.println("Error saat menghapus riwayat habit: " + e.getMessage());
         }
     }
-
-
 }
