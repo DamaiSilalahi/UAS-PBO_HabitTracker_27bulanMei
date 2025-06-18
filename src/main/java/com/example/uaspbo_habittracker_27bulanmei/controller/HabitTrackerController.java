@@ -125,13 +125,6 @@ public class HabitTrackerController {
         }
     }
 
-    private Label createStyledLabel(String text) {
-        Label label = new Label(text);
-        label.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
-        return label;
-    }
-
-
     @FXML
     private void handleLogout() {
         mainApp.showLoginScene();

@@ -132,5 +132,3 @@ public class HistoryController {
         mainApp.showHabitTrackerScene(currentUser);
     }
 }
-
-
