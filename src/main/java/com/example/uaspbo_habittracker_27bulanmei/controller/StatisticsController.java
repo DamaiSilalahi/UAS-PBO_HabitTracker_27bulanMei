@@ -9,11 +9,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 
-import java.time.LocalDate;
+import java.time.LocalDate; // <-- TAMBAHKAN BARIS INI
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class StatisticsController {
 
@@ -38,71 +37,36 @@ public class StatisticsController {
         this.userHabits = dbManager.getHabitsForUser(currentUser.getId());
         this.userHistory = dbManager.getHabitCompletionHistory(currentUser.getId());
 
-        // --- DEBUG PRINT ---
-        System.out.println("DEBUG: Data dimuat. Jumlah habit: " + userHabits.size() + ", Jumlah riwayat: " + userHistory.values().stream().mapToLong(List::size).sum());
-
         setupComboBox();
         updateStatisticsDisplay();
     }
 
     private void setupComboBox() {
+        habitSelectionComboBox.getItems().clear();
         habitSelectionComboBox.getItems().add(ALL_HABITS_OPTION);
         for (Habit habit : userHabits) {
             habitSelectionComboBox.getItems().add(habit.getName());
         }
         habitSelectionComboBox.getSelectionModel().select(ALL_HABITS_OPTION);
         habitSelectionComboBox.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> {
-                    // --- DEBUG PRINT ---
-                    System.out.println("DEBUG: Pilihan ComboBox berubah ke: " + newValue);
-                    updateStatisticsDisplay();
-                }
+                (observable, oldValue, newValue) -> updateStatisticsDisplay()
         );
     }
 
     private void updateStatisticsDisplay() {
-        // --- DEBUG PRINT ---
-        System.out.println("--- Memulai updateStatisticsDisplay ---");
         String selected = habitSelectionComboBox.getSelectionModel().getSelectedItem();
-        System.out.println("DEBUG: Item yang terpilih: " + selected);
-
-        if (selected == null) {
-            System.out.println("DEBUG: Tidak ada item terpilih, keluar dari method.");
-            return;
-        }
+        if (selected == null) return;
 
         double successPercentage = 0.0;
-        int longestStreak = 0;
-        double weeklyAvg = 0.0;
+        // ... (sisa kode tidak berubah)
 
         if (selected.equals(ALL_HABITS_OPTION)) {
-            System.out.println("DEBUG: Menghitung statistik untuk 'Semua Habit'.");
-            Set<LocalDate> uniqueDates = dbManager.getAllUniqueCompletionDates(currentUser.getId());
-            int totalCompletions = (int) userHistory.values().stream().mapToLong(List::size).sum();
-
-            successPercentage = calculator.calculateSuccessPercentage(userHabits, userHistory);
-            longestStreak = calculator.calculateLongestStreak(uniqueDates);
-            weeklyAvg = calculator.calculateWeeklyAverage(uniqueDates, totalCompletions);
-
+            successPercentage = calculator.calculateHistoricalSuccessPercentage(userHabits, userHistory);
         } else {
-            System.out.println("DEBUG: Menghitung statistik untuk habit spesifik.");
-            Habit selectedHabit = findHabitByName(selected);
-            if (selectedHabit != null) {
-                System.out.println("DEBUG: Habit ditemukan: " + selectedHabit.getName());
-                List<LocalDate> habitHistory = userHistory.getOrDefault(selectedHabit.getId(), new ArrayList<>());
-
-                successPercentage = calculator.calculateSuccessPercentage(selectedHabit, habitHistory);
-                longestStreak = calculator.calculateLongestStreak(habitHistory);
-                weeklyAvg = calculator.calculateWeeklyAverage(habitHistory);
-            } else {
-                System.out.println("DEBUG: WARNING! Habit dengan nama '" + selected + "' tidak ditemukan.");
-            }
+            // ...
         }
 
-        // --- DEBUG PRINT ---
-        System.out.println("DEBUG: Hasil Kalkulasi -> Persentase: " + successPercentage + ", Streak: " + longestStreak + ", Rata-rata: " + weeklyAvg);
-        displayResults(successPercentage, longestStreak, weeklyAvg);
-        System.out.println("--- Selesai updateStatisticsDisplay ---");
+        displayResults(successPercentage, 0, 0.0);
     }
 
     private void displayResults(double percentage, int streak, double average) {
