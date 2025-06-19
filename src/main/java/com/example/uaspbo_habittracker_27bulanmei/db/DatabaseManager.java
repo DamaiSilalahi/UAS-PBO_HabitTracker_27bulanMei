@@ -33,14 +33,17 @@ public class DatabaseManager {
                 + "password TEXT NOT NULL"
                 + ");";
 
+        // Di dalam method initializeDatabase()
         String habitTableSql = "CREATE TABLE IF NOT EXISTS habits ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "user_id INTEGER NOT NULL,"
                 + "name TEXT NOT NULL,"
                 + "status INTEGER NOT NULL DEFAULT 0,"
+                + "creation_date TEXT NOT NULL," // Wajib ada
                 + "last_updated TEXT NOT NULL,"
                 + "FOREIGN KEY (user_id) REFERENCES users(id)"
                 + ");";
+
 
         String historyTableSql = "CREATE TABLE IF NOT EXISTS habit_history ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -160,19 +163,17 @@ public class DatabaseManager {
     }
 
     public ArrayList<Habit> getHabitsForUser(int userId) {
-        String sql = "SELECT id, name, status, last_updated FROM habits WHERE user_id = ?";
+        String sql = "SELECT id, name, status, creation_date, last_updated FROM habits WHERE user_id = ?";
         ArrayList<Habit> habits = new ArrayList<>();
+        LocalDate today = LocalDate.now();
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                Habit habit = new Habit(
-                        rs.getInt("id"),
-                        userId,
-                        rs.getString("name"),
-                        LocalDate.parse(rs.getString("last_updated"))
-                );
-                if (rs.getInt("status") == 1) {
+                LocalDate creationDate = LocalDate.parse(rs.getString("creation_date"));
+                LocalDate lastUpdated = LocalDate.parse(rs.getString("last_updated"));
+                Habit habit = new Habit(rs.getInt("id"), userId, rs.getString("name"), creationDate, lastUpdated);
+                if (rs.getInt("status") == 1 && lastUpdated.equals(today)) {
                     habit.markCompletedFromDB();
                 }
                 habits.add(habit);
@@ -184,12 +185,13 @@ public class DatabaseManager {
     }
 
     public Habit addHabit(Habit habit) {
-        String sql = "INSERT INTO habits(user_id, name, status, last_updated) VALUES(?,?,?,?)";
+        String sql = "INSERT INTO habits(user_id, name, status, creation_date, last_updated) VALUES(?,?,?,?,?)";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setInt(1, habit.getUserId());
             pstmt.setString(2, habit.getName());
             pstmt.setInt(3, habit.isCompleted() ? 1 : 0);
-            pstmt.setString(4, habit.getDate().toString());
+            pstmt.setString(4, habit.getCreationDate().toString());
+            pstmt.setString(5, habit.getDate().toString());
             pstmt.executeUpdate();
 
             ResultSet generatedKeys = pstmt.getGeneratedKeys();
