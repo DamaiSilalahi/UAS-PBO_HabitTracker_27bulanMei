@@ -26,6 +26,7 @@
                         <Button onAction="#handleAddHabit" style="-fx-background-radius: 15;" text="Tambah" textFill="#1e3d59" />
                     </children>
                 </HBox>
+                <Label fx:id="warningLabel" textFill="red" visible="false" />
             </children>
             <BorderPane.margin>
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -33,29 +34,31 @@
         </VBox>
     </top>
     <center>
-        <HBox alignment="TOP_CENTER" spacing="10.0" BorderPane.alignment="CENTER">
-            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="260.0" prefWidth="163.0">
+        <HBox alignment="TOP_CENTER" spacing="10.0" BorderPane.alignment="CENTER"
+              style="-fx-padding: 0 10 20 10;">
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="331.0" prefWidth="163.0"
+                        style="-fx-background-color: transparent;">
                 <content>
-                    <VBox fx:id="habitDisplayBox" spacing="5.0" />
+                    <VBox fx:id="habitDisplayBox" spacing="8.0"
+                          style="-fx-background-color: transparent; -fx-background-radius: 5; -fx-padding: 10;" />
                 </content>
             </ScrollPane>
-
-            <VBox fx:id="achievementBox" prefHeight="331.0" prefWidth="159.0" spacing="5.0" style="-fx-background-color: #5fa8af; -fx-padding: 10; -fx-background-radius: 15;">
+            <VBox fx:id="achievementBox" prefHeight="331.0" prefWidth="159.0" spacing="5.0"
+                  style="-fx-background-color: #5fa8af; -fx-padding: 10 10 20 10; -fx-background-radius: 15;">
                 <Label style="-fx-font-weight: bold;" text="🎯 Pencapaian Hari Ini" textFill="WHITE" />
-                <Label fx:id="achievementMessage" wrapText="true" />
+                <Label fx:id="achievementMessage" wrapText="true"/>
             </VBox>
         </HBox>
     </center>
     <bottom>
-        <HBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER">
+        <HBox alignment="CENTER_LEFT" spacing="10.0" BorderPane.alignment="CENTER"
+              style="-fx-padding: 0 10 20 10;">
             <children>
                 <Button onAction="#handleViewHistory" style="-fx-background-radius: 15;" text="Lihat Riwayat" textFill="#1e3d59" />
                 <Button onAction="#handleViewStatistics" style="-fx-background-radius: 15;" text="Lihat Statistik" />
-                <Region HBox.hgrow="ALWAYS" /> <Button onAction="#handleLogout" style="-fx-background-radius: 15;" text="Logout" textFill="RED" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button onAction="#handleLogout" style="-fx-background-radius: 15;" text="Logout" textFill="RED" />
             </children>
-            <BorderPane.margin>
-                <Insets bottom="10.0" left="10.0" right="10.0" />
-            </BorderPane.margin>
         </HBox>
     </bottom>
 </BorderPane>
