@@ -47,7 +47,7 @@ public class HistoryController {
     private Map<LocalDate, VBox> dayCellMap = new HashMap<>();
 
     public void initialize() {
-
+        currentMonth = YearMonth.now();
     }
 
     public void initData(User user, MainApp mainApp) {
@@ -60,9 +60,7 @@ public class HistoryController {
     private void populateView() {
         monthYearLabel.setText(currentMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("id")) + " " + currentMonth.getYear());
         populateCalendar();
-
         populateMonthlySummary();
-
         updateLongTermAchievements();
     }
 
@@ -74,11 +72,9 @@ public class HistoryController {
         for (int i = 0; i < 7; i++) {
             DayOfWeek day = DayOfWeek.of(i + 1);
             Label dayLabel = new Label(day.getDisplayName(TextStyle.SHORT, Locale.forLanguageTag("id")));
-            dayLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #34495e;");
 
             VBox dayHeaderBox = new VBox(dayLabel);
             dayHeaderBox.setAlignment(Pos.CENTER);
-            dayHeaderBox.setStyle("-fx-background-color: #ecf0f1; -fx-padding: 8px 0; -fx-alignment: CENTER; -fx-background-radius: 5px;");
             GridPane.setHgrow(dayHeaderBox, javafx.scene.layout.Priority.ALWAYS);
             calendarGrid.add(dayHeaderBox, i, 0);
         }
@@ -92,7 +88,6 @@ public class HistoryController {
             int col = (day + dayOfWeekOffset - 1) % 7;
 
             Label dayLabel = new Label(String.valueOf(day));
-            dayLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #333333;");
 
             VBox dayCell = new VBox(dayLabel);
             dayCell.setAlignment(Pos.CENTER);
@@ -135,8 +130,6 @@ public class HistoryController {
 
                 selectedDate = cellDate;
 
-                dayCell.setStyle("-fx-background-color: #add8e6; -fx-border-color: #6a9acb; -fx-border-width: 2px; -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-padding: 7px;");
-
                 displayHabitsForSelectedDate(selectedDate);
             });
 
@@ -151,7 +144,6 @@ public class HistoryController {
     private void displayHabitsForSelectedDate(LocalDate date) {
         showDailyHabitsPanel();
         dailyHabitsListView.getItems().clear();
-        dailyHabitsListView.setStyle("-fx-background-color: #fefefe; -fx-border-color: #e0e0e0; -fx-border-width: 1px; -fx-border-radius: 10px; -fx-background-radius: 10px;");
 
         dailyHabitsTitle.setText("Kebiasaan pada " + date.format(DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.forLanguageTag("id"))));
 
@@ -169,7 +161,6 @@ public class HistoryController {
     private void populateMonthlySummary() {
         showMonthlySummaryPanel();
         summaryListView.getItems().clear();
-        summaryListView.setStyle("-fx-background-color: #fefefe; -fx-border-color: #e0e0e0; -fx-border-width: 1px; -fx-border-radius: 10px; -fx-background-radius: 10px;");
         Map<String, Integer> summary = dbManager.getMonthlySummary(currentUser.getId(), currentMonth);
         if (summary.isEmpty()) {
             summaryListView.getItems().add("Tidak ada riwayat bulan ini.");
@@ -216,7 +207,6 @@ public class HistoryController {
         }
 
         Label label = new Label(text);
-        label.setStyle("-fx-text-fill: " + textColor + "; -fx-font-size: 13px;");
 
         HBox badge = new HBox(5);
         if (icon != null) {
@@ -224,27 +214,24 @@ public class HistoryController {
         }
         badge.getChildren().add(label);
         badge.setAlignment(Pos.CENTER_LEFT);
-        badge.setStyle("-fx-background-color: " + backgroundColor + "; -fx-padding: 8px 15px; -fx-border-radius: 20px; -fx-background-radius: 20px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 3, 0, 0, 1); -fx-spacing: 5;");
         return badge;
     }
 
     private void updateLongTermAchievements() {
         badgeBox.getChildren().clear();
-        int totalDays = dbManager.getTotalHabitDays(currentUser.getId());
+        int totalDays = dbManager.getTotalHabitDays(currentUser.getId()); // hitung dari DB berapa hari habit selesai
 
         if (totalDays >= 365) {
-            badgeBox.getChildren().add(createBadge("365 Hari Konsisten!", "/icons/trophy.png", "#FFD700", "#333333"));
+            badgeBox.getChildren().add(new Label("🏆 365 Hari Konsisten!"));
         }
         if (totalDays >= 90) {
-            badgeBox.getChildren().add(createBadge("90 Hari Konsisten!", "/icons/brain.png", "#C0C0C0", "#333333"));
+            badgeBox.getChildren().add(new Label("🧠 90 Hari Konsisten!"));
         }
         if (totalDays >= 30) {
-            badgeBox.getChildren().add(createBadge("30 Hari Konsisten!", "/icons/medal.png", "#CD7F32", "#FFFFFF"));
+            badgeBox.getChildren().add(new Label("🏅 30 Hari Konsisten!"));
         }
         if (totalDays < 30) {
-            Label motivationLabel = new Label("💡 Tetap semangat membangun konsistensi!");
-            motivationLabel.setStyle("-fx-text-fill: #1e3d59; -fx-font-size: 14px; -fx-font-weight: bold;");
-            badgeBox.getChildren().add(motivationLabel);
+            badgeBox.getChildren().add(new Label("💡 Tetap semangat membangun konsistensi!"));
         }
     }
 
