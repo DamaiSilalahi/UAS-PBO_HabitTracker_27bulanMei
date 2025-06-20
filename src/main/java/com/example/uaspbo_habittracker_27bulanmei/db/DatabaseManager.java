@@ -33,13 +33,12 @@ public class DatabaseManager {
                 + "password TEXT NOT NULL"
                 + ");";
 
-        // Di dalam method initializeDatabase()
         String habitTableSql = "CREATE TABLE IF NOT EXISTS habits ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "user_id INTEGER NOT NULL,"
                 + "name TEXT NOT NULL,"
                 + "status INTEGER NOT NULL DEFAULT 0,"
-                + "creation_date TEXT NOT NULL," // Wajib ada
+                + "creation_date TEXT NOT NULL,"
                 + "last_updated TEXT NOT NULL,"
                 + "FOREIGN KEY (user_id) REFERENCES users(id)"
                 + ");";
@@ -62,7 +61,6 @@ public class DatabaseManager {
         }
     }
 
-    // Method baru untuk mengambil kebiasaan yang selesai pada tanggal tertentu
     public List<String> getHabitsCompletedOnDate(int userId, LocalDate date) {
         List<String> habits = new ArrayList<>();
         String sql = "SELECT h.name FROM habit_history hh " +
@@ -82,8 +80,6 @@ public class DatabaseManager {
         return habits;
     }
 
-
-    // ... (Metode-metode DatabaseManager lainnya tetap sama seperti sebelumnya) ...
 
     public void logHabitCompletion(int habitId, LocalDate date) {
         String sql = "INSERT OR IGNORE INTO habit_history(habit_id, completion_date) VALUES(?, ?)";

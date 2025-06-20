@@ -100,7 +100,6 @@ public class MainApp extends Application {
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            //ko
         }
     }
 }

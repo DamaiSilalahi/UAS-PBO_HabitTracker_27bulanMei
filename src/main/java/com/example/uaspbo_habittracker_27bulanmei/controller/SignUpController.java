@@ -33,7 +33,6 @@ public class SignUpController {
         boolean success = dbManager.signUpUser(username, password);
 
         if (success) {
-            // Langsung arahkan ke halaman login setelah berhasil daftar
             mainApp.showLoginScene();
         } else {
             errorLabel.setText("Username sudah digunakan. Coba yang lain.");

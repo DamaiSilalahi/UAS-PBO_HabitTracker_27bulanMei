@@ -20,7 +20,7 @@
                     </font>
                 </Label>
                 <HBox alignment="CENTER" spacing="10">
-                    <Label text="Tampilkan Statistik untuk:" textFill="white" >
+                    <Label text="Tampilkan Progres untuk:" textFill="white" >
                         <font><Font size="14.0" /></font>
                     </Label>
                     <ComboBox fx:id="habitSelectionComboBox" prefWidth="300.0"

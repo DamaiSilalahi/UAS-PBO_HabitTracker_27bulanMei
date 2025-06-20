@@ -6,7 +6,7 @@ public abstract class UserActivity {
 
     public UserActivity(String name) {
         this.name = name;
-        this.status = false; // Default status
+        this.status = false;
     }
 
     public String getName() { return name; }
