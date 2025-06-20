@@ -49,8 +49,8 @@ Dengan antarmuka yang sederhana dan intuitif, *HabitTracker* memungkinkan penggu
 
 ### 1. **Dependencies**
 
-* Java JDK 11 atau lebih baru
-* JavaFX SDK (disesuaikan dengan versi JDK)
+* Java JDK 17 atau lebih baru
+* JavaFX SDK 17.0.6 (disesuaikan dengan versi JDK)
 * IDE yang direkomendasikan: IntelliJ IDEA
 * Library eksternal (misalnya: SQLite JDBC driver jika menggunakan SQLite)
 
