@@ -10,6 +10,9 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
+
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,6 +25,8 @@ public class HabitTrackerController {
     @FXML private VBox habitDisplayBox;
     @FXML private VBox achievementBox;
     @FXML private Label achievementMessage;
+    @FXML private Label warningLabel;
+
 
     private User currentUser;
     private MainApp mainApp;
@@ -45,19 +50,39 @@ public class HabitTrackerController {
     @FXML
     private void handleAddHabit() {
         String habitName = habitInput.getText().trim();
-        if (!habitName.isEmpty()) {
-            Habit newHabit = new Habit(currentUser.getId(), habitName, LocalDate.now());
-            Habit savedHabit = dbManager.addHabit(newHabit);
-            if (savedHabit != null) {
-                habitList.add(savedHabit);
-                updateHabitDisplay();
-                habitInput.clear();
-            }
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Nama kebiasaan tidak boleh kosong!");
-            alert.showAndWait();
+        warningLabel.setVisible(false); // Sembunyikan dulu setiap kali klik tombol
+
+        if (habitName.isEmpty()) {
+            warningLabel.setText("Nama kebiasaan tidak boleh kosong!");
+            warningLabel.setVisible(true);
+            PauseTransition pause = new PauseTransition(Duration.seconds(3));
+            pause.setOnFinished(e -> warningLabel.setVisible(false));
+            pause.play();
+            return;
+        }
+
+        boolean alreadyExists = habitList.stream()
+                .anyMatch(h -> h.getName().equalsIgnoreCase(habitName));
+
+        if (alreadyExists) {
+            warningLabel.setText("❗ Kebiasaan ini sudah ditambahkan sebelumnya.");
+            warningLabel.setVisible(true);
+            PauseTransition pause = new PauseTransition(Duration.seconds(3));
+            pause.setOnFinished(e -> warningLabel.setVisible(false));
+            pause.play();
+            return;
+        }
+
+        Habit newHabit = new Habit(currentUser.getId(), habitName, LocalDate.now());
+        Habit savedHabit = dbManager.addHabit(newHabit);
+        if (savedHabit != null) {
+            habitList.add(savedHabit);
+            updateHabitDisplay();
+            habitInput.clear();
+            warningLabel.setVisible(false); // Sembunyikan kalau berhasil
         }
     }
+
 
     private void updateHabitDisplay() {
         habitDisplayBox.getChildren().clear();
