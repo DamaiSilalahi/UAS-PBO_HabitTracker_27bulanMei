@@ -58,8 +58,11 @@ Dengan antarmuka yang sederhana dan intuitif, *HabitTracker* memungkinkan penggu
 
 1. Clone atau download repositori dari GitHub.
 2. Pastikan JavaFX sudah di-setup di IDE.
-3. Jalankan file `MainApp.java` sebagai Java Application.
-4. Aplikasi akan terbuka di halaman login/register, dan lanjut ke dashboard utama.
+3. Install Plugins Simple SqliteBrowser dan SQLDelight (sesuaikan dengan versi JDK)
+4. Buka proyek di Intellij, lalu pada folder utama klik kanan, cari maven lalu klik Sync project
+5. Lalukan juga langkah diatas pada file pom.xml, klik kanan, cari maven lalu klik Sync project
+6. Jalankan file `MainApp.java` sebagai Java Application.
+7. Aplikasi akan terbuka di halaman login/register, dan lanjut ke dashboard utama.
 
 ---
 
