@@ -1,4 +1,4 @@
-## 📌 Nama & Deskripsi Singkat Aplikasi
+![image](https://github.com/user-attachments/assets/2022c4f3-55e5-46ff-944e-ba0534e82133)## 📌 Nama & Deskripsi Singkat Aplikasi
 
 **HabitTracker**
 
@@ -68,4 +68,4 @@ Dengan antarmuka yang sederhana dan intuitif, *HabitTracker* memungkinkan penggu
 
 ## 🎬 Link Video Presentasi
 
-👉 [)
+👉 [https://youtu.be/2PvRzaewtrQ?si=ugYJ8ZvWruich6Sd]
