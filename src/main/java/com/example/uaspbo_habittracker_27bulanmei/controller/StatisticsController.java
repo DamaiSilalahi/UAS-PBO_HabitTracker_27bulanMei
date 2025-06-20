@@ -8,11 +8,11 @@ import com.example.uaspbo_habittracker_27bulanmei.model.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-
-import java.time.LocalDate; // <-- TAMBAHKAN BARIS INI
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class StatisticsController {
 
@@ -33,10 +33,8 @@ public class StatisticsController {
     public void initData(User user, MainApp mainApp) {
         this.currentUser = user;
         this.mainApp = mainApp;
-
         this.userHabits = dbManager.getHabitsForUser(currentUser.getId());
         this.userHistory = dbManager.getHabitCompletionHistory(currentUser.getId());
-
         setupComboBox();
         updateStatisticsDisplay();
     }
@@ -58,15 +56,29 @@ public class StatisticsController {
         if (selected == null) return;
 
         double successPercentage = 0.0;
-        // ... (sisa kode tidak berubah)
+        int longestStreak = 0;
+        double weeklyAvg = 0.0;
 
         if (selected.equals(ALL_HABITS_OPTION)) {
             successPercentage = calculator.calculateHistoricalSuccessPercentage(userHabits, userHistory);
+            Set<LocalDate> allUniqueDates = dbManager.getAllUniqueCompletionDates(currentUser.getId());
+            int totalCompletions = (int) userHistory.values().stream().mapToLong(List::size).sum();
+            longestStreak = calculator.calculateOverallLongestStreak(allUniqueDates);
+            weeklyAvg = calculator.calculateOverallWeeklyAverage(allUniqueDates, totalCompletions);
+
         } else {
-            // ...
+            Habit selectedHabit = findHabitByName(selected);
+            if (selectedHabit != null) {
+                List<LocalDate> habitHistory = userHistory.getOrDefault(selectedHabit.getId(), new ArrayList<>());
+
+                // Panggil method kalkulator khusus untuk satu habit
+                successPercentage = calculator.calculateSingleHabitPercentage(selectedHabit, habitHistory);
+                longestStreak = calculator.calculateSingleHabitLongestStreak(habitHistory);
+                weeklyAvg = calculator.calculateSingleHabitWeeklyAverage(habitHistory);
+            }
         }
 
-        displayResults(successPercentage, 0, 0.0);
+        displayResults(successPercentage, longestStreak, weeklyAvg);
     }
 
     private void displayResults(double percentage, int streak, double average) {

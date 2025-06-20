@@ -50,7 +50,7 @@ public class HabitTrackerController {
     @FXML
     private void handleAddHabit() {
         String habitName = habitInput.getText().trim();
-        warningLabel.setVisible(false); // Sembunyikan dulu setiap kali klik tombol
+        warningLabel.setVisible(false);
 
         if (habitName.isEmpty()) {
             warningLabel.setText("Nama kebiasaan tidak boleh kosong!");
@@ -79,7 +79,7 @@ public class HabitTrackerController {
             habitList.add(savedHabit);
             updateHabitDisplay();
             habitInput.clear();
-            warningLabel.setVisible(false); // Sembunyikan kalau berhasil
+            warningLabel.setVisible(false);
         }
     }
 
@@ -91,13 +91,12 @@ public class HabitTrackerController {
             cb.setSelected(habit.isCompleted());
 
             cb.setOnAction(e -> {
-                LocalDate today = LocalDate.now(); // Gunakan satu variabel agar konsisten
+                LocalDate today = LocalDate.now();
                 if (cb.isSelected()) {
                     habit.markCompleted();
                     dbManager.logHabitCompletion(habit.getId(), today);
                 } else {
                     habit.resetStatus();
-                    // --- DEBUG PRINT ---
                     System.out.println("DEBUG [Controller]: Mencoba menghapus riwayat untuk habit ID: " + habit.getId() + " pada tanggal: " + today);
                     dbManager.removeHabitCompletionLog(habit.getId(), today);
                 }
